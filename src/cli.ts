@@ -1,6 +1,6 @@
 import * as clack from '@clack/prompts';
 import chalk from 'chalk';
-import type { FrontendConfig, ProjectConfig } from './types';
+import type { FrontendConfig, ProjectConfig, CliOptions } from './types';
 import {
   isValidProjectName,
   isValidServiceName,
@@ -9,14 +9,18 @@ import {
   generateJwtSecret,
 } from './utils/validation';
 import { scaffold } from './scaffolder';
+import { setVerbose, checkEnvironment } from './utils/shell';
 
 function handleCancel(): never {
   clack.cancel('Opération annulée.');
   process.exit(0);
 }
 
-export async function runCli(projectName?: string): Promise<void> {
+export async function runCli(projectName?: string, options: CliOptions = { force: false, verbose: false }): Promise<void> {
   clack.intro(chalk.bgCyan.black(' boiling-fullstack '));
+
+  setVerbose(options.verbose);
+  await checkEnvironment();
 
   // --- Project name ---
   const nameResult = await clack.text({
@@ -208,7 +212,8 @@ export async function runCli(projectName?: string): Promise<void> {
   }
 
   // --- Scaffold ---
-  await scaffold(config);
+  await scaffold(config, options);
 
+  clack.note(`cd ${config.projectName}\nmake up`, 'Pour démarrer');
   clack.outro(chalk.green('Projet généré avec succès !'));
 }

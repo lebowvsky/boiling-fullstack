@@ -15,4 +15,9 @@ export interface ProjectConfig {
   jwtSecret?: string;
 }
 
+export interface CliOptions {
+  force: boolean;
+  verbose: boolean;
+}
+
 export type ValidationResult = true | string;
