@@ -1,0 +1,55 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - '5432:5432'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  backend:
+    build:
+      context: ./backend
+      target: development
+    restart: unless-stopped
+    ports:
+      - '${BACKEND_PORT}:3001'
+    environment:
+      - DATABASE_URL=postgresql://${DB_USER}:${DB_PASSWORD}@postgres:5432/${DB_NAME}
+      - JWT_SECRET=${JWT_SECRET}
+      - NODE_ENV=development
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    depends_on:
+      - postgres
+<%_ for (const fe of frontends) { -%>
+
+  <%= fe.name %>:
+    build:
+      context: ./<%= fe.name %>
+      target: development
+    restart: unless-stopped
+    ports:
+<%_ if (fe.framework === 'nuxt') { -%>
+      - '<%= fe.port %>:3000'
+<%_ } else { -%>
+      - '<%= fe.port %>:5173'
+<%_ } -%>
+    environment:
+      - API_URL=http://backend:3001
+    volumes:
+      - ./<%= fe.name %>:/app
+      - /app/node_modules
+    depends_on:
+      - backend
+<%_ } -%>
+
+volumes:
+  postgres_data:

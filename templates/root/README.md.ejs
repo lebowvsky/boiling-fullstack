@@ -1,0 +1,62 @@
+# <%= projectName %>
+
+Fullstack application scaffolded with [boiling-fullstack](https://github.com/boiling-fullstack).
+
+## Architecture
+
+- **Backend**: NestJS + TypeORM + PostgreSQL (port <%= backendPort %>)
+<%_ for (const fe of frontends) { -%>
+- **<%= fe.name %>**: <%= fe.framework === 'nuxt' ? 'Nuxt 3' : 'Vue 3 + Vite' %> (port <%= fe.port %>)
+<%_ } -%>
+- **Database**: PostgreSQL (`<%= dbName %>`, user: `<%= dbUser %>`)
+
+## Getting started
+
+### Prerequisites
+
+- [Docker](https://docs.docker.com/get-docker/) & Docker Compose
+- [Node.js](https://nodejs.org/) >= 20 (for local development)
+
+### Start the project
+
+```bash
+# Start all services
+make up
+
+# View logs
+make logs
+```
+
+### Available services
+
+| Service | URL |
+|---------|-----|
+| Backend API | http://localhost:<%= backendPort %> |
+<%_ for (const fe of frontends) { -%>
+| <%= fe.name %> | http://localhost:<%= fe.port %> |
+<%_ } -%>
+| PostgreSQL | localhost:5432 |
+
+### API Endpoints
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/` | Status check |
+| GET | `/health` | Healthcheck |
+| POST | `/auth/register` | Register a new user |
+| POST | `/auth/login` | Login |
+
+### Useful commands
+
+```bash
+make up          # Start all services
+make down        # Stop all services
+make build       # Rebuild all services
+make logs        # View all logs
+make restart     # Restart all services
+make clean       # Stop & remove volumes
+```
+
+## Environment variables
+
+Configuration is managed via the `.env` file at the project root. See `.env` for all available variables.

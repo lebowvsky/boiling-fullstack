@@ -1,0 +1,40 @@
+.PHONY: up down build logs restart clean
+
+# Start all services
+up:
+	docker compose up -d
+
+# Stop all services
+down:
+	docker compose down
+
+# Build all services
+build:
+	docker compose build
+
+# View logs (all services)
+logs:
+	docker compose logs -f
+
+# Restart all services
+restart:
+	docker compose restart
+
+# Clean everything (volumes included)
+clean:
+	docker compose down -v
+
+# Backend commands
+backend-logs:
+	docker compose logs -f backend
+
+backend-shell:
+	docker compose exec backend sh
+<%_ for (const fe of frontends) { %>
+# <%= fe.name %> commands
+<%= fe.name %>-logs:
+	docker compose logs -f <%= fe.name %>
+
+<%= fe.name %>-shell:
+	docker compose exec <%= fe.name %> sh
+<%_ } %>

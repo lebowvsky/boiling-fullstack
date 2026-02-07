@@ -1,0 +1,59 @@
+---
+name: test-workflow
+description: Test workflow command
+created: 2025-12-12T15:13:22.196816
+---
+
+# Command: test-workflow
+
+## Parameters
+parameters:
+  - name: example_param
+    type: string
+    required: true
+    description: Description of the parameter
+    default: null
+
+## Workflow
+workflow:
+  # Step 1: Initial action
+  - step: step_1
+    agent: vue-developer  # Name of the agent file (without .md)
+    description: Brief description of what this step does
+    prompt: |
+      Your instructions for the agent.
+      You can use parameter interpolation: {example_param}
+    output_variable: step_1_result
+    on_error: stop  # Options: stop, continue, retry
+    retry_count: 0
+    
+  # Step 2: Use output from previous step
+  - step: step_2
+    agent: code-reviewer
+    description: Review the output from step 1
+    prompt: |
+      Review this code:
+      {step_1_result}
+    output_variable: step_2_result
+    on_error: stop
+    
+  # Step 3: Conditional execution (optional)
+  - step: step_3
+    agent: vue-developer
+    description: Final refactoring
+    condition: "step_2_result contains 'critical'"  # Simple condition
+    prompt: |
+      Refactor based on this review:
+      {step_2_result}
+      
+      Original code:
+      {step_1_result}
+    output_variable: final_result
+
+## Output
+output:
+  # Define what the command returns
+  format: markdown  # Options: markdown, json, text
+  variables:
+    - final_result
+  save_to: .claude/command-outputs/test-workflow-{timestamp}.md
