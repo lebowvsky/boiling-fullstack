@@ -13,6 +13,16 @@ export interface ProjectConfig {
   dbUser: string;
   dbPassword: string;
   jwtSecret?: string;
+  dbAdmin?: DbAdminConfig;
+}
+
+export type DbAdminTool = 'none' | 'pgadmin' | 'adminer';
+
+export interface DbAdminConfig {
+  tool: DbAdminTool;
+  port: number;
+  email?: string;    // pgAdmin uniquement
+  password?: string; // pgAdmin uniquement
 }
 
 export interface CliOptions {

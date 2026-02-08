@@ -3,7 +3,7 @@ import crypto from 'crypto';
 import type { ValidationResult } from '../types';
 
 const KEBAB_CASE_REGEX = /^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$/;
-const RESERVED_SERVICE_NAMES = ['backend', 'db'];
+const RESERVED_SERVICE_NAMES = ['backend', 'db', 'pgadmin', 'adminer'];
 
 export function isValidProjectName(name: string): ValidationResult {
   if (!name) return 'Le nom du projet est requis';

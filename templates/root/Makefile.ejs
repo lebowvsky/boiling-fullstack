@@ -1,4 +1,4 @@
-.PHONY: up down build logs restart clean db-logs db-shell lint-back format-back
+.PHONY: up down build logs restart clean db-logs db-shell lint-back format-back<%_ if (dbAdmin && dbAdmin.tool === 'pgadmin') { %> pgadmin-logs pgadmin-restart<%_ } else if (dbAdmin && dbAdmin.tool === 'adminer') { %> adminer-logs adminer-restart<%_ } %>
 
 # Start all services
 up:
@@ -50,4 +50,19 @@ format-back:
 
 <%= fe.name %>-shell:
 	docker compose exec <%= fe.name %> sh
+<%_ } %>
+<%_ if (dbAdmin && dbAdmin.tool === 'pgadmin') { %>
+# pgAdmin commands
+pgadmin-logs:
+	docker compose logs -f pgadmin
+
+pgadmin-restart:
+	docker compose restart pgadmin
+<%_ } else if (dbAdmin && dbAdmin.tool === 'adminer') { %>
+# Adminer commands
+adminer-logs:
+	docker compose logs -f adminer
+
+adminer-restart:
+	docker compose restart adminer
 <%_ } %>

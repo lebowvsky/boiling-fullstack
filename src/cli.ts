@@ -1,6 +1,6 @@
 import * as clack from '@clack/prompts';
 import chalk from 'chalk';
-import type { FrontendConfig, ProjectConfig, CliOptions } from './types';
+import type { FrontendConfig, ProjectConfig, CliOptions, DbAdminTool, DbAdminConfig } from './types';
 import {
   isValidProjectName,
   isValidServiceName,
@@ -167,6 +167,69 @@ export async function runCli(projectName?: string, options: CliOptions = { force
   // --- JWT Secret ---
   const jwtSecret = generateJwtSecret();
 
+  // --- DB Admin tool ---
+  clack.log.step(chalk.cyan('Outil d\'administration DB'));
+
+  const dbAdminToolRes = await clack.select<{ value: DbAdminTool; label: string; hint?: string }[], DbAdminTool>({
+    message: 'Outil d\'administration de la base de données :',
+    options: [
+      { value: 'none', label: 'Aucun' },
+      { value: 'pgadmin', label: 'pgAdmin', hint: 'interface riche' },
+      { value: 'adminer', label: 'Adminer', hint: 'léger et rapide' },
+    ],
+    initialValue: 'none',
+  });
+  if (clack.isCancel(dbAdminToolRes)) handleCancel();
+  const dbAdminTool = dbAdminToolRes as DbAdminTool;
+
+  let dbAdmin: DbAdminConfig | undefined;
+
+  if (dbAdminTool !== 'none') {
+    const defaultPort = dbAdminTool === 'pgadmin' ? 5050 : 8080;
+
+    const dbAdminPortRes = await clack.text({
+      message: `Port de ${dbAdminTool === 'pgadmin' ? 'pgAdmin' : 'Adminer'} :`,
+      defaultValue: String(defaultPort),
+      validate(value) {
+        const port = parseInt(value, 10);
+        if (isNaN(port)) return 'Entrez un nombre valide';
+        const result = isValidPort(port, usedPorts);
+        if (result !== true) return result;
+      },
+    });
+    if (clack.isCancel(dbAdminPortRes)) handleCancel();
+    const dbAdminPort = parseInt(dbAdminPortRes as string, 10);
+    usedPorts.push(dbAdminPort);
+
+    if (dbAdminTool === 'pgadmin') {
+      const pgAdminEmailRes = await clack.text({
+        message: 'Email pgAdmin :',
+        defaultValue: 'admin@admin.com',
+        validate(value) {
+          if (!value) return 'L\'email est requis';
+        },
+      });
+      if (clack.isCancel(pgAdminEmailRes)) handleCancel();
+      const pgAdminEmail = pgAdminEmailRes as string;
+
+      const defaultPgAdminPassword = generatePassword();
+      const pgAdminPasswordRes = await clack.text({
+        message: 'Mot de passe pgAdmin :',
+        defaultValue: defaultPgAdminPassword,
+        validate(value) {
+          if (!value) return 'Le mot de passe est requis';
+          if (value.length < 8) return 'Le mot de passe doit faire au moins 8 caractères';
+        },
+      });
+      if (clack.isCancel(pgAdminPasswordRes)) handleCancel();
+      const pgAdminPassword = pgAdminPasswordRes as string;
+
+      dbAdmin = { tool: 'pgadmin', port: dbAdminPort, email: pgAdminEmail, password: pgAdminPassword };
+    } else {
+      dbAdmin = { tool: 'adminer', port: dbAdminPort };
+    }
+  }
+
   // --- Build config ---
   const config: ProjectConfig = {
     projectName: finalProjectName,
@@ -176,6 +239,7 @@ export async function runCli(projectName?: string, options: CliOptions = { force
     dbUser,
     dbPassword,
     jwtSecret,
+    dbAdmin,
   };
 
   // --- Recap ---
@@ -186,6 +250,10 @@ export async function runCli(projectName?: string, options: CliOptions = { force
     )
     .join('\n');
 
+  const dbAdminLabel = config.dbAdmin
+    ? `${config.dbAdmin.tool === 'pgadmin' ? 'pgAdmin' : 'Adminer'} (port ${config.dbAdmin.port})`
+    : 'Aucun';
+
   const recap = [
     `${chalk.bold('Projet')}       : ${config.projectName}`,
     `${chalk.bold('Frontends')}    :`,
@@ -195,6 +263,7 @@ export async function runCli(projectName?: string, options: CliOptions = { force
     `  Nom          : ${config.dbName}`,
     `  Utilisateur  : ${config.dbUser}`,
     `  Mot de passe : ${config.dbPassword}`,
+    `${chalk.bold('Admin DB')}     : ${dbAdminLabel}`,
   ].join('\n');
 
   clack.note(recap, 'Récapitulatif');

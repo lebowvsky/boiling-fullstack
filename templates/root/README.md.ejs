@@ -6,7 +6,12 @@ Fullstack application scaffolded with [boiling-fullstack](https://github.com/boi
 
 - **Backend**: NestJS + TypeORM + PostgreSQL (port <%= backendPort %>)
 <%_ for (const fe of frontends) { -%>
-- **<%= fe.name %>**: <%= fe.framework === 'nuxt' ? 'Nuxt 3' : 'Vue 3 + Vite' %> (port <%= fe.port %>)
+- **<%= fe.name %>**: <%= fe.framework === 'nuxt' ? 'Nuxt 4' : 'Vue 3 + Vite' %> (port <%= fe.port %>)
+<%_ } -%>
+<%_ if (dbAdmin && dbAdmin.tool === 'pgadmin') { -%>
+- **Admin DB**: pgAdmin (port <%= dbAdmin.port %>)
+<%_ } else if (dbAdmin && dbAdmin.tool === 'adminer') { -%>
+- **Admin DB**: Adminer (port <%= dbAdmin.port %>)
 <%_ } -%>
 - **Database**: PostgreSQL (`<%= dbName %>`, user: `<%= dbUser %>`)
 
@@ -34,6 +39,11 @@ make logs
 | Backend API | http://localhost:<%= backendPort %> |
 <%_ for (const fe of frontends) { -%>
 | <%= fe.name %> | http://localhost:<%= fe.port %> |
+<%_ } -%>
+<%_ if (dbAdmin && dbAdmin.tool === 'pgadmin') { -%>
+| pgAdmin | http://localhost:<%= dbAdmin.port %> |
+<%_ } else if (dbAdmin && dbAdmin.tool === 'adminer') { -%>
+| Adminer | http://localhost:<%= dbAdmin.port %> |
 <%_ } -%>
 | PostgreSQL | localhost:5432 |
 
