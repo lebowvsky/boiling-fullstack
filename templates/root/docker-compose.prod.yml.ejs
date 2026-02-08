@@ -1,0 +1,45 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: always
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  backend:
+    build:
+      context: ./backend
+      target: production
+    restart: always
+    ports:
+      - '${BACKEND_PORT}:3001'
+    environment:
+      - DATABASE_URL=postgresql://${DB_USER}:${DB_PASSWORD}@postgres:5432/${DB_NAME}
+      - JWT_SECRET=${JWT_SECRET}
+      - NODE_ENV=production
+    depends_on:
+      - postgres
+<%_ for (const fe of frontends) { -%>
+
+  <%= fe.name %>:
+    build:
+      context: ./<%= fe.name %>
+      target: production
+    restart: always
+    ports:
+<%_ if (fe.framework === 'nuxt') { -%>
+      - '<%= fe.port %>:3000'
+<%_ } else { -%>
+      - '<%= fe.port %>:80'
+<%_ } -%>
+    environment:
+      - API_URL=http://backend:3001
+    depends_on:
+      - backend
+<%_ } -%>
+
+volumes:
+  postgres_data:

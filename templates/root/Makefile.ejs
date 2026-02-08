@@ -1,28 +1,58 @@
-.PHONY: up down build logs restart clean db-logs db-shell lint-back format-back<%_ if (dbAdmin && dbAdmin.tool === 'pgadmin') { %> pgadmin-logs pgadmin-restart<%_ } else if (dbAdmin && dbAdmin.tool === 'adminer') { %> adminer-logs adminer-restart<%_ } %>
+.PHONY: up down build logs restart clean up-prod down-prod build-prod logs-prod restart-prod clean-prod db-logs db-shell lint-back format-back<%_ if (dbAdmin && dbAdmin.tool === 'pgadmin') { %> pgadmin-logs pgadmin-restart<%_ } else if (dbAdmin && dbAdmin.tool === 'adminer') { %> adminer-logs adminer-restart<%_ } %>
 
-# Start all services
+# --- Development ---
+
+# Start all services (dev)
 up:
 	docker compose up -d
 
-# Stop all services
+# Stop all services (dev)
 down:
 	docker compose down
 
-# Build all services
+# Build all services (dev)
 build:
 	docker compose build
 
-# View logs (all services)
+# View logs (dev)
 logs:
 	docker compose logs -f
 
-# Restart all services
+# Restart all services (dev)
 restart:
 	docker compose restart
 
-# Clean everything (volumes included)
+# Clean everything (dev, volumes included)
 clean:
 	docker compose down -v
+
+# --- Production ---
+
+# Start all services (prod)
+up-prod:
+	docker compose -f docker-compose.prod.yml --env-file .env.production up -d
+
+# Stop all services (prod)
+down-prod:
+	docker compose -f docker-compose.prod.yml --env-file .env.production down
+
+# Build all services (prod)
+build-prod:
+	docker compose -f docker-compose.prod.yml --env-file .env.production build
+
+# View logs (prod)
+logs-prod:
+	docker compose -f docker-compose.prod.yml --env-file .env.production logs -f
+
+# Restart all services (prod)
+restart-prod:
+	docker compose -f docker-compose.prod.yml --env-file .env.production restart
+
+# Clean everything (prod, volumes included)
+clean-prod:
+	docker compose -f docker-compose.prod.yml --env-file .env.production down -v
+
+# --- Service commands ---
 
 # Database commands
 db-logs:

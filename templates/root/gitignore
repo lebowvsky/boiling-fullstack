@@ -3,5 +3,6 @@ dist
 .output
 .nuxt
 .env
+.env.production
 *.log
 .DS_Store

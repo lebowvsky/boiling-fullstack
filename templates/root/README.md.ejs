@@ -22,7 +22,7 @@ Fullstack application scaffolded with [boiling-fullstack](https://github.com/boi
 - [Docker](https://docs.docker.com/get-docker/) & Docker Compose
 - [Node.js](https://nodejs.org/) >= 20 (for local development)
 
-### Start the project
+### Start the project (development)
 
 ```bash
 # Start all services
@@ -32,7 +32,7 @@ make up
 make logs
 ```
 
-### Available services
+### Available services (development)
 
 | Service | URL |
 |---------|-----|
@@ -56,7 +56,7 @@ make logs
 | POST | `/auth/register` | Register a new user |
 | POST | `/auth/login` | Login |
 
-### Useful commands
+### Useful commands (development)
 
 ```bash
 make up          # Start all services
@@ -67,6 +67,59 @@ make restart     # Restart all services
 make clean       # Stop & remove volumes
 ```
 
+## Production
+
+### Setup
+
+1. Edit `.env.production` and replace all placeholder values:
+   - `DB_PASSWORD` — use a strong, unique password
+   - `JWT_SECRET` — generate a random string (min 32 characters)
+
+2. Build and start:
+
+```bash
+make build-prod
+make up-prod
+```
+
+### Commands
+
+```bash
+make build-prod    # Build production images
+make up-prod       # Start all services (prod)
+make down-prod     # Stop all services (prod)
+make logs-prod     # View all logs (prod)
+make restart-prod  # Restart all services (prod)
+make clean-prod    # Stop & remove volumes (prod)
+```
+
+### Dev vs Production comparison
+
+| Aspect | Development | Production |
+|--------|-------------|------------|
+| Compose file | `docker-compose.yml` | `docker-compose.prod.yml` |
+| Env file | `.env` | `.env.production` |
+| Build target | `development` | `production` |
+| Restart policy | `unless-stopped` | `always` |
+| Source volumes | Mounted (hot-reload) | None (code built in image) |
+| Backend NODE_ENV | `development` | `production` |
+<%_ for (const fe of frontends) { -%>
+<%_ if (fe.framework === 'vue') { -%>
+| <%= fe.name %> server | Vite dev (port 5173) | nginx (port 80) |
+<%_ } else { -%>
+| <%= fe.name %> server | Nuxt dev (port 3000) | Nuxt production (port 3000) |
+<%_ } -%>
+<%_ } -%>
+| PostgreSQL | Exposed (5432) | Internal only |
+<%_ if (dbAdmin) { -%>
+| DB Admin | <%= dbAdmin.tool === 'pgadmin' ? 'pgAdmin' : 'Adminer' %> | Not included |
+<%_ } -%>
+
 ## Environment variables
 
-Configuration is managed via the `.env` file at the project root. See `.env` for all available variables.
+Configuration is managed via two env files at the project root:
+
+- **`.env`** — Development environment. Used by `docker-compose.yml`.
+- **`.env.production`** — Production environment. Used by `docker-compose.prod.yml`. Contains placeholder values that **must** be changed before deploying.
+
+Both files are listed in `.gitignore` and should never be committed.
