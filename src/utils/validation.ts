@@ -6,16 +6,16 @@ const KEBAB_CASE_REGEX = /^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$/;
 const RESERVED_SERVICE_NAMES = ['backend', 'db', 'pgadmin', 'adminer'];
 
 export function isValidProjectName(name: string): ValidationResult {
-  if (!name) return 'Le nom du projet est requis';
+  if (!name) return 'Project name is required';
 
   const result = validateNpmPackageName(name);
   if (!result.validForNewPackages) {
     const errors = [...(result.errors || []), ...(result.warnings || [])];
-    return errors[0] || 'Nom de projet invalide';
+    return errors[0] || 'Invalid project name';
   }
 
   if (!KEBAB_CASE_REGEX.test(name)) {
-    return 'Le nom doit être en kebab-case (ex: mon-projet)';
+    return 'Name must be in kebab-case (e.g. my-project)';
   }
 
   return true;
@@ -25,18 +25,18 @@ export function isValidServiceName(
   name: string,
   usedNames: string[]
 ): ValidationResult {
-  if (!name) return 'Le nom du service est requis';
+  if (!name) return 'Service name is required';
 
   if (!KEBAB_CASE_REGEX.test(name)) {
-    return 'Le nom doit être en kebab-case (ex: mon-frontend)';
+    return 'Name must be in kebab-case (e.g. my-frontend)';
   }
 
   if (RESERVED_SERVICE_NAMES.includes(name)) {
-    return `Le nom "${name}" est réservé`;
+    return `Name "${name}" is reserved`;
   }
 
   if (usedNames.includes(name)) {
-    return `Le nom "${name}" est déjà utilisé`;
+    return `Name "${name}" is already taken`;
   }
 
   return true;
@@ -46,12 +46,12 @@ export function isValidPort(
   port: number,
   usedPorts: number[]
 ): ValidationResult {
-  if (!Number.isInteger(port)) return 'Le port doit être un entier';
-  if (port < 1024 || port > 65535) return 'Le port doit être entre 1024 et 65535';
-  if (port === 5432) return 'Le port 5432 est réservé à PostgreSQL';
+  if (!Number.isInteger(port)) return 'Port must be an integer';
+  if (port < 1024 || port > 65535) return 'Port must be between 1024 and 65535';
+  if (port === 5432) return 'Port 5432 is reserved for PostgreSQL';
 
   if (usedPorts.includes(port)) {
-    return `Le port ${port} est déjà utilisé`;
+    return `Port ${port} is already in use`;
   }
 
   return true;

@@ -17,11 +17,11 @@ export async function runCommand(
   } catch (error: any) {
     if (error.code === 'ENOENT') {
       throw new Error(
-        `Commande "${command}" introuvable. Vérifiez qu'elle est installée et accessible dans votre PATH.`
+        `Command "${command}" not found. Make sure it is installed and available in your PATH.`
       );
     }
     throw new Error(
-      `Échec de la commande "${command} ${args.join(' ')}" : ${error.shortMessage || error.message}`
+      `Command "${command} ${args.join(' ')}" failed: ${error.shortMessage || error.message}`
     );
   }
 }
@@ -39,14 +39,14 @@ export async function checkEnvironment(): Promise<void> {
   const hasGit = await checkCommand('git');
   if (!hasGit) {
     throw new Error(
-      'git est requis mais introuvable. Installez git avant de continuer.'
+      'git is required but was not found. Please install git before continuing.'
     );
   }
 
   const hasDocker = await checkCommand('docker');
   if (!hasDocker) {
     console.warn(
-      chalk.yellow('⚠ docker non détecté. Le projet sera généré mais "make up" nécessite Docker.')
+      chalk.yellow('⚠ docker not found. The project will be generated but "make up" requires Docker.')
     );
   }
 }

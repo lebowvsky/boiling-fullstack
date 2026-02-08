@@ -12,7 +12,7 @@ import { scaffold } from './scaffolder';
 import { setVerbose, checkEnvironment } from './utils/shell';
 
 function handleCancel(): never {
-  clack.cancel('Opération annulée.');
+  clack.cancel('Operation cancelled.');
   process.exit(0);
 }
 
@@ -24,8 +24,8 @@ export async function runCli(projectName?: string, options: CliOptions = { force
 
   // --- Project name ---
   const nameResult = await clack.text({
-    message: 'Nom du projet :',
-    placeholder: 'mon-projet',
+    message: 'Project name:',
+    placeholder: 'my-project',
     initialValue: projectName,
     validate(value) {
       const result = isValidProjectName(value);
@@ -37,11 +37,11 @@ export async function runCli(projectName?: string, options: CliOptions = { force
 
   // --- Number of frontends ---
   const frontendCountResult = await clack.text({
-    message: 'Nombre de frontends (1-5) :',
+    message: 'Number of frontends (1-5):',
     defaultValue: '1',
     validate(value) {
       const n = parseInt(value, 10);
-      if (isNaN(n) || n < 1 || n > 5) return 'Entrez un nombre entre 1 et 5';
+      if (isNaN(n) || n < 1 || n > 5) return 'Enter a number between 1 and 5';
     },
   });
   if (clack.isCancel(frontendCountResult)) handleCancel();
@@ -56,11 +56,11 @@ export async function runCli(projectName?: string, options: CliOptions = { force
     const defaultPort = 3000 + i * 10;
     const prefix = frontendCount > 1 ? `Frontend ${i + 1}` : 'Frontend';
 
-    clack.log.step(chalk.cyan(`Configuration ${prefix}`));
+    clack.log.step(chalk.cyan(`${prefix} configuration`));
 
     // Name
     const nameRes = await clack.text({
-      message: `${prefix} - Nom du service :`,
+      message: `${prefix} - Service name:`,
       placeholder: frontendCount === 1 ? 'frontend' : `frontend-${i + 1}`,
       defaultValue: frontendCount === 1 ? 'frontend' : `frontend-${i + 1}`,
       validate(value) {
@@ -74,10 +74,10 @@ export async function runCli(projectName?: string, options: CliOptions = { force
 
     // Framework
     const frameworkRes = await clack.select<{ value: 'nuxt' | 'vue'; label: string; hint?: string }[], 'nuxt' | 'vue'>({
-      message: `${prefix} - Framework :`,
+      message: `${prefix} - Framework:`,
       options: [
         { value: 'nuxt', label: 'Nuxt', hint: 'full-stack Vue framework' },
-        { value: 'vue', label: 'Vue', hint: 'SPA avec Vite' },
+        { value: 'vue', label: 'Vue', hint: 'SPA with Vite' },
       ],
       initialValue: 'nuxt',
     });
@@ -86,10 +86,10 @@ export async function runCli(projectName?: string, options: CliOptions = { force
 
     // Styling
     const stylingRes = await clack.select<{ value: 'css' | 'sass'; label: string; hint?: string }[], 'css' | 'sass'>({
-      message: `${prefix} - Styling :`,
+      message: `${prefix} - Styling:`,
       options: [
-        { value: 'css', label: 'CSS natif' },
-        { value: 'sass', label: 'Sass', hint: 'installe sass en dépendance' },
+        { value: 'css', label: 'Plain CSS' },
+        { value: 'sass', label: 'Sass', hint: 'installs sass as dependency' },
       ],
       initialValue: 'css',
     });
@@ -98,11 +98,11 @@ export async function runCli(projectName?: string, options: CliOptions = { force
 
     // Port
     const portRes = await clack.text({
-      message: `${prefix} - Port :`,
+      message: `${prefix} - Port:`,
       defaultValue: String(defaultPort),
       validate(value) {
         const port = parseInt(value, 10);
-        if (isNaN(port)) return 'Entrez un nombre valide';
+        if (isNaN(port)) return 'Enter a valid number';
         const result = isValidPort(port, usedPorts);
         if (result !== true) return result;
       },
@@ -116,11 +116,11 @@ export async function runCli(projectName?: string, options: CliOptions = { force
 
   // --- Backend port ---
   const backendPortRes = await clack.text({
-    message: 'Port du backend :',
+    message: 'Backend port:',
     defaultValue: '3001',
     validate(value) {
       const port = parseInt(value, 10);
-      if (isNaN(port)) return 'Entrez un nombre valide';
+      if (isNaN(port)) return 'Enter a valid number';
       const result = isValidPort(port, usedPorts);
       if (result !== true) return result;
     },
@@ -130,23 +130,23 @@ export async function runCli(projectName?: string, options: CliOptions = { force
   usedPorts.push(backendPort);
 
   // --- Database config ---
-  clack.log.step(chalk.cyan('Configuration de la base de données'));
+  clack.log.step(chalk.cyan('Database configuration'));
 
   const dbNameRes = await clack.text({
-    message: 'Nom de la base de données :',
+    message: 'Database name:',
     defaultValue: `${finalProjectName.replace(/-/g, '_')}_db`,
     validate(value) {
-      if (!value) return 'Le nom est requis';
+      if (!value) return 'Name is required';
     },
   });
   if (clack.isCancel(dbNameRes)) handleCancel();
   const dbName = dbNameRes as string;
 
   const dbUserRes = await clack.text({
-    message: 'Utilisateur de la base de données :',
+    message: 'Database user:',
     defaultValue: 'postgres',
     validate(value) {
-      if (!value) return "L'utilisateur est requis";
+      if (!value) return 'User is required';
     },
   });
   if (clack.isCancel(dbUserRes)) handleCancel();
@@ -154,11 +154,11 @@ export async function runCli(projectName?: string, options: CliOptions = { force
 
   const defaultPassword = generatePassword();
   const dbPasswordRes = await clack.text({
-    message: 'Mot de passe de la base de données :',
+    message: 'Database password:',
     defaultValue: defaultPassword,
     validate(value) {
-      if (!value) return 'Le mot de passe est requis';
-      if (value.length < 8) return 'Le mot de passe doit faire au moins 8 caractères';
+      if (!value) return 'Password is required';
+      if (value.length < 8) return 'Password must be at least 8 characters';
     },
   });
   if (clack.isCancel(dbPasswordRes)) handleCancel();
@@ -168,14 +168,14 @@ export async function runCli(projectName?: string, options: CliOptions = { force
   const jwtSecret = generateJwtSecret();
 
   // --- DB Admin tool ---
-  clack.log.step(chalk.cyan('Outil d\'administration DB'));
+  clack.log.step(chalk.cyan('DB admin tool'));
 
   const dbAdminToolRes = await clack.select<{ value: DbAdminTool; label: string; hint?: string }[], DbAdminTool>({
-    message: 'Outil d\'administration de la base de données :',
+    message: 'Database admin tool:',
     options: [
-      { value: 'none', label: 'Aucun' },
-      { value: 'pgadmin', label: 'pgAdmin', hint: 'interface riche' },
-      { value: 'adminer', label: 'Adminer', hint: 'léger et rapide' },
+      { value: 'none', label: 'None' },
+      { value: 'pgadmin', label: 'pgAdmin', hint: 'feature-rich interface' },
+      { value: 'adminer', label: 'Adminer', hint: 'lightweight and fast' },
     ],
     initialValue: 'none',
   });
@@ -188,11 +188,11 @@ export async function runCli(projectName?: string, options: CliOptions = { force
     const defaultPort = dbAdminTool === 'pgadmin' ? 5050 : 8080;
 
     const dbAdminPortRes = await clack.text({
-      message: `Port de ${dbAdminTool === 'pgadmin' ? 'pgAdmin' : 'Adminer'} :`,
+      message: `${dbAdminTool === 'pgadmin' ? 'pgAdmin' : 'Adminer'} port:`,
       defaultValue: String(defaultPort),
       validate(value) {
         const port = parseInt(value, 10);
-        if (isNaN(port)) return 'Entrez un nombre valide';
+        if (isNaN(port)) return 'Enter a valid number';
         const result = isValidPort(port, usedPorts);
         if (result !== true) return result;
       },
@@ -203,10 +203,10 @@ export async function runCli(projectName?: string, options: CliOptions = { force
 
     if (dbAdminTool === 'pgadmin') {
       const pgAdminEmailRes = await clack.text({
-        message: 'Email pgAdmin :',
+        message: 'pgAdmin email:',
         defaultValue: 'admin@admin.com',
         validate(value) {
-          if (!value) return 'L\'email est requis';
+          if (!value) return 'Email is required';
         },
       });
       if (clack.isCancel(pgAdminEmailRes)) handleCancel();
@@ -214,11 +214,11 @@ export async function runCli(projectName?: string, options: CliOptions = { force
 
       const defaultPgAdminPassword = generatePassword();
       const pgAdminPasswordRes = await clack.text({
-        message: 'Mot de passe pgAdmin :',
+        message: 'pgAdmin password:',
         defaultValue: defaultPgAdminPassword,
         validate(value) {
-          if (!value) return 'Le mot de passe est requis';
-          if (value.length < 8) return 'Le mot de passe doit faire au moins 8 caractères';
+          if (!value) return 'Password is required';
+          if (value.length < 8) return 'Password must be at least 8 characters';
         },
       });
       if (clack.isCancel(pgAdminPasswordRes)) handleCancel();
@@ -252,37 +252,37 @@ export async function runCli(projectName?: string, options: CliOptions = { force
 
   const dbAdminLabel = config.dbAdmin
     ? `${config.dbAdmin.tool === 'pgadmin' ? 'pgAdmin' : 'Adminer'} (port ${config.dbAdmin.port})`
-    : 'Aucun';
+    : 'None';
 
   const recap = [
-    `${chalk.bold('Projet')}       : ${config.projectName}`,
+    `${chalk.bold('Project')}      : ${config.projectName}`,
     `${chalk.bold('Frontends')}    :`,
     frontendLines,
     `${chalk.bold('Backend')}      : port ${config.backendPort}`,
-    `${chalk.bold('Base de données')}:`,
-    `  Nom          : ${config.dbName}`,
-    `  Utilisateur  : ${config.dbUser}`,
-    `  Mot de passe : ${config.dbPassword}`,
-    `${chalk.bold('Admin DB')}     : ${dbAdminLabel}`,
+    `${chalk.bold('Database')}     :`,
+    `  Name         : ${config.dbName}`,
+    `  User         : ${config.dbUser}`,
+    `  Password     : ${config.dbPassword}`,
+    `${chalk.bold('DB Admin')}     : ${dbAdminLabel}`,
   ].join('\n');
 
-  clack.note(recap, 'Récapitulatif');
+  clack.note(recap, 'Summary');
 
   // --- Confirmation ---
   const confirmRes = await clack.confirm({
-    message: 'Générer le projet ?',
+    message: 'Generate project?',
     initialValue: true,
   });
   if (clack.isCancel(confirmRes)) handleCancel();
 
   if (!confirmRes) {
-    clack.outro('Génération annulée.');
+    clack.outro('Generation cancelled.');
     return;
   }
 
   // --- Scaffold ---
   await scaffold(config, options);
 
-  clack.note(`cd ${config.projectName}\nmake up`, 'Pour démarrer');
-  clack.outro(chalk.green('Projet généré avec succès !'));
+  clack.note(`cd ${config.projectName}\nmake up`, 'Getting started');
+  clack.outro(chalk.green('Project generated successfully!'));
 }

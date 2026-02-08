@@ -20,7 +20,7 @@ export async function scaffold(config: ProjectConfig, options: CliOptions): Prom
       await fs.remove(projectDir);
     } else {
       throw new Error(
-        `Le dossier "${config.projectName}" existe déjà. Utilisez --force pour le remplacer.`
+        `Directory "${config.projectName}" already exists. Use --force to overwrite.`
       );
     }
   }
@@ -30,39 +30,39 @@ export async function scaffold(config: ProjectConfig, options: CliOptions): Prom
 
     // Frontends
     for (const fe of config.frontends) {
-      s.start(`Génération de ${chalk.cyan(fe.name)} (${fe.framework})…`);
+      s.start(`Generating ${chalk.cyan(fe.name)} (${fe.framework})...`);
       await copyAndRenderDir(
         path.join(templatesDir, 'frontend', fe.framework),
         path.join(projectDir, fe.name),
         { name: fe.name, styling: fe.styling }
       );
-      s.stop(`${chalk.cyan(fe.name)} créé`);
+      s.stop(`${chalk.cyan(fe.name)} created`);
     }
 
     // Backend
-    s.start(`Génération du ${chalk.cyan('backend')} (NestJS)…`);
+    s.start(`Generating ${chalk.cyan('backend')} (NestJS)...`);
     await copyAndRenderDir(
       path.join(templatesDir, 'backend', 'nestjs'),
       path.join(projectDir, 'backend'),
       { projectName: config.projectName, backendPort: config.backendPort }
     );
-    s.stop(`${chalk.cyan('backend')} créé`);
+    s.stop(`${chalk.cyan('backend')} created`);
 
     // Root files
-    s.start('Génération des fichiers racine…');
+    s.start('Generating root files...');
     await copyAndRenderDir(
       path.join(templatesDir, 'root'),
       projectDir,
       { ...config }
     );
-    s.stop('Fichiers racine créés');
+    s.stop('Root files created');
 
     // Git init
-    s.start('Initialisation du dépôt git…');
+    s.start('Initializing git repository...');
     await gitInit(projectDir);
-    s.stop('Dépôt git initialisé');
+    s.stop('Git repository initialized');
   } catch (error) {
-    s.stop(chalk.red('Erreur'));
+    s.stop(chalk.red('Error'));
     if (await fs.pathExists(projectDir)) {
       await fs.remove(projectDir);
     }
