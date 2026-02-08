@@ -1,6 +1,6 @@
 {
   "name": "boiling-fullstack",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "CLI to scaffold fullstack projects with Docker, NestJS backend, and Vue/Nuxt frontends",
   "main": "dist/index.js",
   "bin": {
