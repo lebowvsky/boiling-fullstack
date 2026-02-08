@@ -10,13 +10,25 @@
     "dist",
     "templates"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lebowvsky/boiling-fullstack"
+  },
   "scripts": {
     "build": "tsc",
     "dev": "ts-node src/index.ts",
     "start": "node dist/index.js",
     "prepublishOnly": "npm run build"
   },
-  "keywords": ["cli", "scaffold", "fullstack", "docker", "nuxt", "vue", "nestjs"],
+  "keywords": [
+    "cli",
+    "scaffold",
+    "fullstack",
+    "docker",
+    "nuxt",
+    "vue",
+    "nestjs"
+  ],
   "author": "",
   "license": "MIT",
   "dependencies": {
