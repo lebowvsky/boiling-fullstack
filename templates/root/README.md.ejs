@@ -115,6 +115,39 @@ make clean-prod    # Stop & remove volumes (prod)
 | DB Admin | <%= dbAdmin.tool === 'pgadmin' ? 'pgAdmin' : 'Adminer' %> | Not included |
 <%_ } -%>
 
+## Migrations
+
+TypeORM migrations are used to manage the database schema in production. In development, `synchronize: true` handles schema changes automatically.
+
+### Workflow
+
+1. **Generate** a migration after modifying entities:
+
+```bash
+make migration-generate name=AddPostTable
+```
+
+2. **Review** the generated file in `backend/src/migrations/`.
+
+3. **Run** the migration:
+
+```bash
+# Development
+make migration-run
+
+# Production
+make migration-run-prod
+```
+
+### Commands
+
+| Command | Description |
+|---------|-------------|
+| `make migration-generate name=Name` | Generate a migration from entity changes |
+| `make migration-run` | Run pending migrations (dev) |
+| `make migration-revert` | Revert last migration (dev) |
+| `make migration-run-prod` | Run pending migrations (prod) |
+
 ## Environment variables
 
 Configuration is managed via two env files at the project root:

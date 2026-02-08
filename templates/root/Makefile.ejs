@@ -1,4 +1,4 @@
-.PHONY: up down build logs restart clean up-prod down-prod build-prod logs-prod restart-prod clean-prod db-logs db-shell lint-back format-back<%_ if (dbAdmin && dbAdmin.tool === 'pgadmin') { %> pgadmin-logs pgadmin-restart<%_ } else if (dbAdmin && dbAdmin.tool === 'adminer') { %> adminer-logs adminer-restart<%_ } %>
+.PHONY: up down build logs restart clean up-prod down-prod build-prod logs-prod restart-prod clean-prod db-logs db-shell lint-back format-back migration-generate migration-run migration-revert migration-run-prod<%_ if (dbAdmin && dbAdmin.tool === 'pgadmin') { %> pgadmin-logs pgadmin-restart<%_ } else if (dbAdmin && dbAdmin.tool === 'adminer') { %> adminer-logs adminer-restart<%_ } %>
 
 # --- Development ---
 
@@ -73,6 +73,24 @@ lint-back:
 
 format-back:
 	docker compose exec backend npm run format
+
+# --- Migrations ---
+
+# Generate a migration (usage: make migration-generate name=AddPostTable)
+migration-generate:
+	docker compose exec backend npm run migration:generate -- src/migrations/$(name)
+
+# Run pending migrations (dev)
+migration-run:
+	docker compose exec backend npm run migration:run
+
+# Revert last migration (dev)
+migration-revert:
+	docker compose exec backend npm run migration:revert
+
+# Run pending migrations (prod)
+migration-run-prod:
+	docker compose -f docker-compose.prod.yml --env-file .env.production run --rm backend npx typeorm migration:run -d dist/config/data-source.js
 <%_ for (const fe of frontends) { %>
 # <%= fe.name %> commands
 <%= fe.name %>-logs:
