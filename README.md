@@ -7,7 +7,8 @@ Scaffold fullstack projects with Docker, NestJS backend, and Vue/Nuxt frontends 
 - **Multi-frontend** — 1 to 5 frontends per project, each independently configured
 - **Framework choice** — Nuxt 4 (SSR) or Vue 3 + Vite (SPA) per frontend
 - **Styling choice** — CSS or Sass per frontend
-- **Backend** — NestJS + TypeORM + PostgreSQL with JWT authentication pre-configured
+- **Backend** — NestJS + TypeORM + PostgreSQL with JWT authentication and Tasks CRUD example
+- **API documentation** — Swagger/OpenAPI auto-generated at `/api/docs`
 - **Database migrations** — TypeORM migration scripts ready to use
 - **Docker Compose** — Dev and production configs with hot reloading
 - **Makefile** — All common commands available via `make`
@@ -88,6 +89,13 @@ my-project/
 │   │   │   ├── dto/
 │   │   │   └── entities/
 │   │   │       └── user.entity.ts
+│   │   ├── tasks/
+│   │   │   ├── tasks.controller.ts
+│   │   │   ├── tasks.service.ts
+│   │   │   ├── tasks.module.ts
+│   │   │   ├── dto/
+│   │   │   └── entities/
+│   │   │       └── task.entity.ts
 │   │   ├── config/
 │   │   │   ├── typeorm.config.ts
 │   │   │   └── data-source.ts

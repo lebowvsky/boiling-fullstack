@@ -37,6 +37,7 @@ make logs
 | Service | URL |
 |---------|-----|
 | Backend API | http://localhost:<%= backendPort %> |
+| API Docs | http://localhost:<%= backendPort %>/api/docs |
 <%_ for (const fe of frontends) { -%>
 | <%= fe.name %> | http://localhost:<%= fe.port %> |
 <%_ } -%>
@@ -55,6 +56,20 @@ make logs
 | GET | `/health` | Healthcheck |
 | POST | `/auth/register` | Register a new user |
 | POST | `/auth/login` | Login |
+| POST | `/tasks` | Create a new task (JWT) |
+| GET | `/tasks` | List all tasks (JWT) |
+| GET | `/tasks/:id` | Get a task by ID (JWT) |
+| PATCH | `/tasks/:id` | Update a task (JWT) |
+| DELETE | `/tasks/:id` | Delete a task (JWT) |
+
+### API Documentation
+
+Interactive Swagger documentation is available at [http://localhost:<%= backendPort %>/api/docs](http://localhost:<%= backendPort %>/api/docs) when the backend is running.
+
+To test authenticated endpoints in Swagger UI:
+1. Call `POST /auth/register` or `POST /auth/login` to get a JWT token
+2. Click the **Authorize** button and enter `Bearer <your-token>`
+3. All subsequent requests will include the JWT header
 
 ### Useful commands (development)
 
