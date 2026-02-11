@@ -14,7 +14,11 @@
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true
+    "noFallthroughCasesInSwitch": true<% if (useShadcn) { %>,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"]
+    }<% } %>
   },
   "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.vue"]
 }

@@ -34,8 +34,15 @@ export async function scaffold(config: ProjectConfig, options: CliOptions): Prom
       await copyAndRenderDir(
         path.join(templatesDir, 'frontend', fe.framework),
         path.join(projectDir, fe.name),
-        { name: fe.name, styling: fe.styling }
+        { name: fe.name, styling: fe.styling, useShadcn: fe.useShadcn }
       );
+      if (fe.framework === 'vue' && fe.useShadcn) {
+        await copyAndRenderDir(
+          path.join(templatesDir, 'frontend', 'vue-shadcn'),
+          path.join(projectDir, fe.name),
+          { name: fe.name, styling: fe.styling, useShadcn: fe.useShadcn }
+        );
+      }
       s.stop(`${chalk.cyan(fe.name)} created`);
     }
 

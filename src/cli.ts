@@ -96,6 +96,17 @@ export async function runCli(projectName?: string, options: CliOptions = { force
     if (clack.isCancel(stylingRes)) handleCancel();
     const styling = stylingRes as 'css' | 'sass';
 
+    // shadcn-vue (Vue only)
+    let useShadcn = false;
+    if (framework === 'vue') {
+      const shadcnRes = await clack.confirm({
+        message: `${prefix} - Add shadcn-vue (includes Tailwind CSS)?`,
+        initialValue: false,
+      });
+      if (clack.isCancel(shadcnRes)) handleCancel();
+      useShadcn = shadcnRes as boolean;
+    }
+
     // Port
     const portRes = await clack.text({
       message: `${prefix} - Port:`,
@@ -111,7 +122,7 @@ export async function runCli(projectName?: string, options: CliOptions = { force
     const port = parseInt(portRes as string, 10);
     usedPorts.push(port);
 
-    frontends.push({ name: serviceName, framework, styling, port });
+    frontends.push({ name: serviceName, framework, styling, useShadcn, port });
   }
 
   // --- Backend port ---
@@ -246,7 +257,7 @@ export async function runCli(projectName?: string, options: CliOptions = { force
   const frontendLines = config.frontends
     .map(
       (f, i) =>
-        `  ${i + 1}. ${f.name} (${f.framework}, ${f.styling}, port ${f.port})`
+        `  ${i + 1}. ${f.name} (${f.framework}, ${f.styling}${f.useShadcn ? ' + shadcn-vue' : ''}, port ${f.port})`
     )
     .join('\n');
 

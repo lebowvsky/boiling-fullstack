@@ -2,6 +2,7 @@ export interface FrontendConfig {
   name: string;
   framework: 'nuxt' | 'vue';
   styling: 'css' | 'sass';
+  useShadcn: boolean;
   port: number;
 }
 

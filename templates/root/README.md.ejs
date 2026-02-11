@@ -6,7 +6,7 @@ Fullstack application scaffolded with [boiling-fullstack](https://github.com/boi
 
 - **Backend**: NestJS + TypeORM + PostgreSQL (port <%= backendPort %>)
 <%_ for (const fe of frontends) { -%>
-- **<%= fe.name %>**: <%= fe.framework === 'nuxt' ? 'Nuxt 4' : 'Vue 3 + Vite' %> (port <%= fe.port %>)
+- **<%= fe.name %>**: <%= fe.framework === 'nuxt' ? 'Nuxt 4' : 'Vue 3 + Vite' %><%= fe.useShadcn ? ' + shadcn-vue' : '' %> (port <%= fe.port %>)
 <%_ } -%>
 <%_ if (dbAdmin && dbAdmin.tool === 'pgadmin') { -%>
 - **Admin DB**: pgAdmin (port <%= dbAdmin.port %>)
@@ -82,6 +82,27 @@ make restart     # Restart all services
 make clean       # Stop & remove volumes
 ```
 
+<%_ const shadcnFrontends = frontends.filter(fe => fe.useShadcn); -%>
+<%_ if (shadcnFrontends.length > 0) { -%>
+## Adding shadcn-vue components
+
+<%_ for (const fe of shadcnFrontends) { -%>
+To add a new shadcn-vue component to **<%= fe.name %>**:
+
+```bash
+docker compose exec <%= fe.name %> npx shadcn-vue@latest add <component-name>
+```
+
+For example, to add the Card component:
+
+```bash
+docker compose exec <%= fe.name %> npx shadcn-vue@latest add card
+```
+
+<%_ } -%>
+See the [shadcn-vue documentation](https://www.shadcn-vue.com/docs/components) for available components.
+
+<%_ } -%>
 ## Production
 
 ### Setup
