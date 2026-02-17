@@ -1,0 +1,76 @@
+name: 🔨 Template Improvement
+description: Suggest an improvement to the generated project templates
+title: "[Template]: "
+labels: ["template", "enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this template to suggest improvements to the code that boiling-fullstack **generates** (Dockerfiles, NestJS backend, Vue/Nuxt frontends, configs, etc.).
+
+  - type: dropdown
+    id: template
+    attributes:
+      label: Affected Template
+      description: Which generated template needs improvement?
+      options:
+        - Backend (NestJS / TypeORM)
+        - Frontend - Nuxt
+        - Frontend - Vue + Vite
+        - Dockerfile(s)
+        - docker-compose.yml
+        - Makefile
+        - ESLint / Prettier config
+        - .env files
+        - Generated README
+        - Multiple templates
+    validations:
+      required: true
+
+  - type: textarea
+    id: current
+    attributes:
+      label: Current Behavior
+      description: What does the current generated template do or look like?
+      placeholder: |
+        The generated Dockerfile for the backend currently uses...
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposed
+    attributes:
+      label: Proposed Change
+      description: What should the generated template look like instead?
+      placeholder: |
+        The Dockerfile should use multi-stage builds to reduce image size...
+    validations:
+      required: true
+
+  - type: textarea
+    id: files
+    attributes:
+      label: Files to Modify
+      description: Which files in the `templates/` directory are affected?
+      placeholder: |
+        - `templates/backend/Dockerfile.ejs`
+        - `templates/docker-compose.yml.ejs`
+
+  - type: dropdown
+    id: difficulty
+    attributes:
+      label: Estimated Difficulty
+      options:
+        - "🟢 Beginner (minor change, limited scope)"
+        - "🟡 Intermediate (requires understanding of the template engine)"
+        - "🔴 Advanced (complex changes across multiple templates)"
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: contribution
+    attributes:
+      label: Contribution
+      options:
+        - label: I am willing to submit a PR for this change.
+          required: false

@@ -1,0 +1,138 @@
+name: 🐛 Bug Report
+description: Report a bug with boiling-fullstack CLI or generated projects
+title: "[Bug]: "
+labels: ["bug", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report a bug! Please fill out the sections below to help us understand and reproduce the issue.
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Affected Area
+      description: Where does the bug occur?
+      options:
+        - CLI (scaffolding process)
+        - Generated Backend (NestJS)
+        - Generated Frontend (Nuxt)
+        - Generated Frontend (Vue + Vite)
+        - Docker / Docker Compose
+        - Makefile commands
+        - Database / TypeORM
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Bug Description
+      description: A clear and concise description of what the bug is.
+      placeholder: When I run `npx boiling-fullstack my-app` and select Nuxt with Sass, the generated project...
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to Reproduce
+      description: Provide the exact steps to reproduce the bug.
+      placeholder: |
+        1. Run `npx boiling-fullstack my-app`
+        2. Select 2 frontends, Nuxt + Vue
+        3. Choose Sass for both
+        4. Run `make up`
+        5. See error...
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected Behavior
+      description: What should have happened?
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual Behavior
+      description: What actually happened? Include error messages or logs if possible.
+    validations:
+      required: true
+
+  - type: textarea
+    id: cli-options
+    attributes:
+      label: CLI Options Used
+      description: What options did you select during scaffolding?
+      placeholder: |
+        - Number of frontends: 2
+        - Frontend 1: Nuxt + Sass (port 3000)
+        - Frontend 2: Vue + CSS (port 3010)
+        - Backend port: 3001
+        - DB admin: pgAdmin
+
+  - type: input
+    id: version
+    attributes:
+      label: boiling-fullstack version
+      description: Run `npx boiling-fullstack --version`
+      placeholder: "1.0.0"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: os
+    attributes:
+      label: Operating System
+      options:
+        - macOS
+        - Linux (Ubuntu/Debian)
+        - Linux (Other)
+        - Windows (WSL)
+        - Windows
+    validations:
+      required: true
+
+  - type: input
+    id: node-version
+    attributes:
+      label: Node.js version
+      description: Run `node --version`
+      placeholder: "v20.11.0"
+    validations:
+      required: true
+
+  - type: input
+    id: docker-version
+    attributes:
+      label: Docker version
+      description: Run `docker --version`
+      placeholder: "Docker version 27.0.0"
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant Logs
+      description: Paste any relevant log output. This will be automatically formatted as code.
+      render: shell
+
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots
+      description: If applicable, add screenshots to help explain the problem.
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Checklist
+      options:
+        - label: I have searched existing issues to make sure this is not a duplicate.
+          required: true
+        - label: I am using the latest version of boiling-fullstack.
+          required: false

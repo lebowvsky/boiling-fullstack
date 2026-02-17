@@ -1,0 +1,44 @@
+name: 📖 Documentation
+description: Report missing, incorrect, or unclear documentation
+title: "[Docs]: "
+labels: ["documentation", "good first issue"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Help us improve our documentation! This is a great way to make your first contribution.
+
+  - type: dropdown
+    id: type
+    attributes:
+      label: Documentation Type
+      options:
+        - README.md (project root)
+        - Generated README (in scaffolded projects)
+        - Code comments / JSDoc
+        - CONTRIBUTING.md
+        - Missing documentation
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: What needs to change?
+      description: Describe what is missing, incorrect, or unclear.
+    validations:
+      required: true
+
+  - type: textarea
+    id: suggestion
+    attributes:
+      label: Suggested Improvement
+      description: If you have a suggestion for the fix, describe it here.
+
+  - type: checkboxes
+    id: contribution
+    attributes:
+      label: Contribution
+      options:
+        - label: I am willing to submit a PR for this documentation change.
+          required: false

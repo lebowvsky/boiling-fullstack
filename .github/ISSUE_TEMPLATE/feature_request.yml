@@ -1,0 +1,86 @@
+name: ✨ Feature Request
+description: Suggest a new feature or improvement for boiling-fullstack
+title: "[Feature]: "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for suggesting a feature! We appreciate ideas that can make boiling-fullstack even better.
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Feature Area
+      description: What part of the project does this affect?
+      options:
+        - CLI experience
+        - Backend template (NestJS)
+        - Frontend template (Nuxt)
+        - Frontend template (Vue + Vite)
+        - Docker / DevOps
+        - New framework support
+        - New styling option
+        - Database / ORM
+        - Documentation
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem / Motivation
+      description: What problem does this feature solve? Why is it needed?
+      placeholder: |
+        As a developer using boiling-fullstack, I often need to...
+        Currently, there is no way to...
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed Solution
+      description: Describe the feature you'd like. Be as detailed as possible.
+      placeholder: |
+        Add a new CLI option that allows users to...
+        The generated code should include...
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives Considered
+      description: Any alternative solutions or workarounds you've considered?
+
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance Criteria
+      description: How would we know this feature is done? What should be testable?
+      placeholder: |
+        - [ ] The CLI offers the new option during scaffolding
+        - [ ] Generated project includes the feature configured correctly
+        - [ ] `make up` starts all services without errors
+        - [ ] Documentation is updated
+
+  - type: dropdown
+    id: breaking
+    attributes:
+      label: Is this a breaking change?
+      options:
+        - "No"
+        - "Yes"
+        - "Not sure"
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: contribution
+    attributes:
+      label: Contribution
+      options:
+        - label: I am willing to submit a PR for this feature.
+          required: false
