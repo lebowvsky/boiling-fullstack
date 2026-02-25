@@ -1,5 +1,11 @@
 # boiling-fullstack
 
+[![npm version](https://img.shields.io/npm/v/boiling-fullstack)](https://www.npmjs.com/package/boiling-fullstack)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
+[![Node.js >= 20](https://img.shields.io/badge/node-%3E%3D%2020-brightgreen)](https://nodejs.org/)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
+[![Docker](https://img.shields.io/badge/docker-ready-blue?logo=docker)](https://www.docker.com/)
+
 Scaffold fullstack projects with Docker, NestJS backend, and Vue/Nuxt frontends in seconds.
 
 ## Features
